@@ -12,4 +12,5 @@ BOTON RECORDAR SECION: Luego de poner su usuario y contraseña, puede mantener s
 
 
 ejercicio 2:
-...
+En el Código se le pidió a Copilot que realice el Código con la estructura adecuada y pensado para ejecutarse en QT con un diseño moderno
+El codigo es de monitoreo de VPS. En el se pueden ver metricas reales y a tiempo real del servidor. Toda la guia de como usarlo esta subido dentro de la carpeta.
