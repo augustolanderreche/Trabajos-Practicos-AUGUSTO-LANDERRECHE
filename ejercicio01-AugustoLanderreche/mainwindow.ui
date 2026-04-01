@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QWidget" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Trabajos Prácticos</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="labelTitle">
+     <property name="text">
+      <string>Gestión de Trabajos Prácticos</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayoutFilters">
+     <item>
+      <widget class="QLabel" name="labelFilterStatus">
+       <property name="text">
+        <string>Estado:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="comboBoxStatus">
+       <item>
+        <property name="text">
+         <string>Todos</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Pendiente</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Completado</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="labelFilterPriority">
+       <property name="text">
+        <string>Prioridad:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="comboBoxPriority">
+       <item>
+        <property name="text">
+         <string>Todas</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Baja</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Media</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Alta</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButtonApplyFilter">
+       <property name="text">
+        <string>Aplicar Filtro</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QTableWidget" name="tableWidgetJobs">
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="labelHistory">
+     <property name="text">
+      <string>Historial de Acciones</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTableWidget" name="tableWidgetHistory">
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayoutButtons">
+     <item>
+      <widget class="QPushButton" name="pushButtonAddJob">
+       <property name="text">
+        <string>Agregar Trabajo</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButtonRefresh">
+       <property name="text">
+        <string>Actualizar</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButtonLogout">
+       <property name="text">
+        <string>Cerrar Sesión</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
