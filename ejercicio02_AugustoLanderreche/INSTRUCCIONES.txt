@@ -1,0 +1,206 @@
+DESARROLLO DE APLICACIÓN QT PARA MONITOREO DE SERVIDOR
+
+================================================================================
+TERMINAL 1 (Tu PC - copiar archivo)
+================================================================================
+
+cd C:\Users\aland\Documents\ejercicio02_AugustoLanderreche
+
+scp server.py root@ip:~/
+
+(Digita tu contraseña de VPS)
+
+================================================================================
+TERMINAL 2 (Tu PC - conectar a VPS)
+================================================================================
+
+ssh root@ip
+
+(Digita tu contraseña)
+
+================================================================================
+TERMINAL 2 (Ya dentro de VPS - instalar)
+================================================================================
+
+Copia CADA LÍNEA UNA A LA VEZ y presiona Enter:
+
+sudo apt update
+
+(Espera que termine completamente)
+
+sudo apt install python3 python3-pip -y
+
+(Espera que termine completamente)
+
+pip3 install --break-system-packages psutil
+
+(Espera que termine completamente)
+
+NOTA: Si dice "no existe", usa este comando:
+pip3 install --break-system-packages psutil
+
+Este comando ignora la restricción e instala psutil correctamente.
+
+================================================================================
+TERMINAL 2 (Ya dentro de VPS - ejecutar servidor)
+================================================================================
+
+python3 ~/server.py
+
+VERÁS ESTO:
+✓ Servidor iniciado en: http://localhost:8000
+✓ Endpoint disponible: http://localhost:8000/api/health
+
+NO CIERRES ESTA TERMINAL, DÉJALA CORRIENDO
+
+================================================================================
+TERMINAL 3 (Tu PC - verificar)
+================================================================================
+
+curl http://ip:8000/api/health
+
+Si ves JSON con datos, funciona correctamente ✓
+
+================================================================================
+EN TU APLICACIÓN QT - PASO A PASO
+================================================================================
+
+ABRE TU APLICACIÓN QT QUE COMPILASTE
+
+Verás una ventana grande.
+
+En la PARTE DE ARRIBA hay un campo que dice:
+
+    "URL del Servidor:"
+    [http://localhost:8000/api/health]     ← AQUÍ
+
+Este campo tiene texto adentro que dice "http://localhost:8000/api/health"
+
+================================================================================
+PASO 1: SELECCIONA EL TEXTO
+================================================================================
+
+Haz TRIPLE-CLIC dentro de ese campo.
+
+El texto se pondrá azul/resaltado. Significa que está seleccionado.
+
+================================================================================
+PASO 2: BORRA EL TEXTO
+================================================================================
+
+Presiona la tecla DELETE (o SUPR)
+
+El texto desaparece. El campo queda vacío.
+
+================================================================================
+PASO 3: ESCRIBE LA NUEVA URL
+================================================================================
+
+Ahora escribe EXACTAMENTE esto (cópialo):
+
+http://ip:8000/api/health
+
+No hay espacios ni nada más. Exacto como está.
+
+================================================================================
+PASO 4: PRESIONA ENTER
+================================================================================
+
+Presiona la tecla ENTER
+
+El campo ahora debería mostrar:
+
+    [http://ip:8000/api/health]
+
+================================================================================
+PASO 5: BUSCA EL BOTÓN AZUL
+================================================================================
+
+Abajo en la misma ventana, en la sección "Controles de Monitoreo"
+
+Hay dos botones azules grandes:
+
+    [🔄 Refresco Manual]   [▶ Iniciar Monitoreo]
+
+Haz clic en el que dice "▶ Iniciar Monitoreo"
+
+================================================================================
+RESULTADO
+================================================================================
+
+Si todo funciona, la ventana debería mostrar:
+
+Estado: OK ✓
+
+Y empezar a aparecer números:
+
+CPU: 35.5%
+Memoria: 42.3%
+Disco: 65.8%
+Uptime: 10d 05:32:17
+Último chequeo: 14:35:42
+
+Y abajo un historial de eventos.
+
+================================================================================
+SI VES OFFLINE
+================================================================================
+
+Significa que no puede conectar.
+
+Verifica:
+
+1. ¿El servidor en Terminal 2 sigue corriendo?
+   (Deberías ver "Servidor iniciado en..." en esa terminal)
+
+2. ¿La URL en Qt es exactamente?
+   http://ip:8000/api/health
+
+   (Sin espacios, sin http:// repetido, exacto)
+
+3. ¿Esperaste 5-10 segundos?
+   A veces tarda en conectar
+
+Si sigue sin funcionar, en Terminal 3 escribe:
+
+curl http://ip:8000/api/health
+
+Si ves JSON, el servidor funciona. El problema es Qt.
+
+================================================================================
+
+================================================================================
+RESULTADO ESPERADO
+================================================================================
+
+Deberías ver:
+
+Estado: OK ✓
+CPU: XX%
+Memoria: XX%
+Disco: XX%
+Uptime: XXdXX:XX:XX
+Último chequeo: XX:XX:XX
+
+================================================================================
+SI ALGO SALE MAL
+================================================================================
+
+Error: "Permission denied"
+→ Tu contraseña de VPS es incorrecta
+→ Intenta de nuevo
+
+Error: "Connection refused"
+→ El servidor no está corriendo en Terminal 2
+→ Asegúrate línea "python3 ~/server.py" esté activa
+
+Error: "No route to host"
+→ Firewall bloqueado
+→ En Terminal 2 (dentro VPS): sudo ufw allow 8000
+
+Qt no conecta pero curl sí
+→ Verifica URL en Qt sea exactamente: http://194.163.180.102:8000/api/health
+→ Sin http:// o espacios extra
+
+================================================================================
+

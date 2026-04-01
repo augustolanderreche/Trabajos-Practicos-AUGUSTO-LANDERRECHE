@@ -1,0 +1,63 @@
+EXPLICACIÓN DE CADA DATO EN LA APLICACIÓN QT
+
+1) URL del Servidor
+   - Qué muestra: la dirección endpoint usada en cada petición HTTP.
+   - De dónde sale: texto ingresado por el usuario en el campo "URL del Servidor".
+   - Por qué muestra esto: para saber a qué VPS se está consultando (ej: http://194.163.180.102:8000/api/health).
+
+2) Estado
+   - Qué muestra: estado general de salud (OK/WARNING/CRITICAL/OFFLINE).
+   - De dónde sale: calculado en C++ en ServerHealthMonitor::determineStatus() según umbrales de CPU, memoria y disco.
+   - Por qué muestra esto: cambia según los valores actuales vs umbral configurado (ej. si CPU > 80% pasa a WARNING).
+
+3) CPU (% y barra)
+   - Qué muestra: porcentaje de uso de CPU actual.
+   - De dónde sale: valor cpu_usage en JSON obtenido del servidor Python (/api/health) usando psutil.cpu_percent(0.5).
+   - Por qué muestra esto: refleja carga de proceso real en el VPS; va de 0 a 100.
+
+4) Memoria (% y barra)
+   - Qué muestra: porcentaje de RAM usada.
+   - De dónde sale: valor memory_usage en JSON, extraído con psutil.virtual_memory().percent.
+   - Por qué muestra esto: indica cuánta memoria está en uso, incluidas cache/buffers.
+
+5) Disco (% y barra)
+   - Qué muestra: porcentaje de disco usado en la raíz.
+   - De dónde sale: valor disk_usage en JSON, extraído con psutil.disk_usage('/').percent.
+   - Por qué muestra esto: muestra cuánto del almacenamiento del sistema ya está ocupado.
+
+6) Uptime
+   - Qué muestra: tiempo transcurrido desde el último inicio/reinicio del sistema, en formato Dd HH:MM:SS.
+   - De dónde sale: valor uptime en JSON, calculado como time.time() - psutil.boot_time().
+   - Por qué muestra esto: envía el tiempo real de actividad del servidor; no es random.
+
+7) Tiempo de respuesta (RTT total)
+   - Qué muestra: milisegundos de ida y vuelta desde el cliente Qt hasta el servidor y retorno.
+   - De dónde sale: calculado en Qt como (QDateTime::currentMSecsSinceEpoch() - m_requestStartTime). Se recibe junto a serverResponseTime (tiempo interno del servidor) en JSON.
+   - Por qué muestra esto: refleja latencia real de red + procesamiento en el servidor; por eso tu ping (~260 ms) es el valor aproximado.
+
+8) Tiempo de procesamiento en server
+   - Qué muestra: milisegundos que el servidor Python demora en generar y devolver el JSON.
+   - De dónde sale: valor serverResponseTime en JSON, calculado en server.py como (time.time() - start) * 1000.
+   - Por qué muestra esto: indica cuánto tomó la API interna, sin ida/vuelta de red.
+
+9) Último chequeo
+   - Qué muestra: hora local del cliente Qt en que se recibió la última actualización.
+   - De dónde sale: generado en el cliente Qt (QDateTime::currentDateTime().toString()).
+   - Por qué muestra esto: indica la última vez que se completó una consulta.
+
+9) Historial de eventos
+   - Qué muestra: mensajes cronológicos de cambios de estado (OK/WARNING/CRITICAL) y eventos manuales.
+   - De dónde sale: log que mantiene ServerHealthMonitor::eventHistory basado en diferencias entre chequeos.
+   - Por qué muestra esto: sirve de registro para saber cuándo se activaron umbrales.
+
+========================
+CONCEPTO CLAVE
+- La app no inventa datos: recibe un JSON desde el VPS.
+- El VPS no inventa datos si psutil está instalado: obtiene métricas reales del kernel y hardware.
+- Números distintos se producen por cambios reales de carga del sistema en tiempo real.
+
+========================
+COMPROBACIÓN RÁPIDA (en VPS)
+- Ejecutar:
+  python3 -c "import psutil, time; print(psutil.cpu_percent(0.5), psutil.virtual_memory().percent, psutil.disk_usage('/').percent, time.time()-psutil.boot_time())"
+- Debe coincidir con UI (o muy cercano) para cpu/mem/disco/uptime.
