@@ -5,12 +5,13 @@
 #include <QColor>
 #include <QPointF>
 #include <QTimer>
+#include <QString>
 #include "canvasmodel.h"
 
 class CanvasView : public QWidget {
     Q_OBJECT
 public:
-    explicit CanvasView(CanvasModel *model, QWidget *parent = nullptr);
+    explicit CanvasView(CanvasModel *model, const QString &userId, QWidget *parent = nullptr);
 
     void setBaseColor(const QColor &color);
     void setPenWidth(qreal width);
@@ -30,6 +31,7 @@ private:
     enum Tool { Pen, Eraser };
 
     CanvasModel *m_model;
+    QString m_userId;
     QColor m_baseColor;
     qreal m_penWidth;
     qreal m_eraserWidth;

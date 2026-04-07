@@ -10,10 +10,11 @@
 #include <QMessageBox>
 #include <QVBoxLayout>
 
-MainWindow::MainWindow(QWidget *parent)
+MainWindow::MainWindow(const QString &userName, QWidget *parent)
     : QMainWindow(parent),
+    m_userName(userName),
       m_model(new CanvasModel(this)),
-      m_view(new CanvasView(m_model, this)),
+    m_view(new CanvasView(m_model, m_userName, this)),
       m_sync(new SyncManager(m_model, this))
 {
     resize(1024, 768);
@@ -27,6 +28,9 @@ MainWindow::MainWindow(QWidget *parent)
     saveButton->setStyleSheet("QPushButton { background-color: #0078D7; color: white; border: none; padding: 8px 16px; border-radius: 4px; } QPushButton:hover { background-color: #005A9E; }");
     connect(saveButton, &QPushButton::clicked, this, &MainWindow::onSaveClicked);
     toolbar->addWidget(saveButton);
+
+    QLabel *userLabel = new QLabel(QString("Usuario: %1").arg(m_userName), this);
+    toolbar->addWidget(userLabel);
 
     QLabel *infoLabel = new QLabel("Botones 1-9: color / Rueda: grosor / botón izquierdo: dibujar / botón derecho: goma", this);
     toolbar->addWidget(infoLabel);

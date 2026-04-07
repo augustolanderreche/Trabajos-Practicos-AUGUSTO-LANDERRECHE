@@ -3,10 +3,13 @@
 #include <QPainterPath>
 #include <QMouseEvent>
 #include <QKeyEvent>
+#include <QHash>
+#include <QStringList>
 
-CanvasView::CanvasView(CanvasModel *model, QWidget *parent) :
+CanvasView::CanvasView(CanvasModel *model, const QString &userId, QWidget *parent) :
     QWidget(parent),
     m_model(model),
+    m_userId(userId),
     m_baseColor(192, 19, 76),
     m_penWidth(4),
     m_eraserWidth(6),
@@ -36,8 +39,31 @@ void CanvasView::paintEvent(QPaintEvent *) {
     painter.setRenderHint(QPainter::Antialiasing);
 
     const QVector<Stroke> strokes = m_model->strokes();
+    QHash<QString, QImage> userLayers;
+    QStringList userOrder;
+
+    for (const Stroke &stroke : strokes) {
+        const QString layerKey = stroke.userId.isEmpty() ? QStringLiteral("__anonymous__") : stroke.userId;
+        if (!userLayers.contains(layerKey)) {
+            QImage layer(size(), QImage::Format_ARGB32_Premultiplied);
+            layer.fill(Qt::transparent);
+            userLayers.insert(layerKey, layer);
+            userOrder.append(layerKey);
+        }
+    }
+
     for (const Stroke &s : strokes) {
         if (s.points.isEmpty()) continue;
+
+        const QString layerKey = s.userId.isEmpty() ? QStringLiteral("__anonymous__") : s.userId;
+        QPainter layerPainter(&userLayers[layerKey]);
+        layerPainter.setRenderHint(QPainter::Antialiasing);
+
+        if (s.eraser) {
+            layerPainter.setCompositionMode(QPainter::CompositionMode_Clear);
+        } else {
+            layerPainter.setCompositionMode(QPainter::CompositionMode_SourceOver);
+        }
 
         if (s.points.size() == 1) {
             QPen pen;
@@ -45,8 +71,8 @@ void CanvasView::paintEvent(QPaintEvent *) {
             pen.setJoinStyle(Qt::RoundJoin);
             pen.setWidthF(s.points.first().width);
             pen.setColor(s.points.first().color);
-            painter.setPen(pen);
-            painter.drawPoint(s.points.first().pos);
+            layerPainter.setPen(pen);
+            layerPainter.drawPoint(s.points.first().pos);
             continue;
         }
 
@@ -59,10 +85,14 @@ void CanvasView::paintEvent(QPaintEvent *) {
             pen.setJoinStyle(Qt::RoundJoin);
             pen.setWidthF((p0.width + p1.width) / 2.0);
             pen.setColor(p1.color);
-            painter.setPen(pen);
+            layerPainter.setPen(pen);
 
-            painter.drawLine(p0.pos, p1.pos);
+            layerPainter.drawLine(p0.pos, p1.pos);
         }
+    }
+
+    for (const QString &layerKey : userOrder) {
+        painter.drawImage(QPoint(0, 0), userLayers.value(layerKey));
     }
 }
 
@@ -80,7 +110,7 @@ void CanvasView::mousePressEvent(QMouseEvent *event) {
     if (m_drawing) {
         qreal width = (m_tool == Eraser) ? m_eraserWidth : m_penWidth;
         bool isEraser = (m_tool == Eraser);
-        m_currentStroke = &m_model->startStroke(isEraser, m_baseColor, width);
+        m_currentStroke = &m_model->startStroke(isEraser, m_baseColor, width, m_userId);
         m_model->addPointToStroke(*m_currentStroke, event->pos());
         update();
     }
@@ -96,9 +126,10 @@ void CanvasView::mouseReleaseEvent(QMouseEvent *event) {
     Q_UNUSED(event)
     if (m_drawing && m_currentStroke) {
         m_model->finishStroke(*m_currentStroke);
-        m_currentStroke = nullptr;
-        m_drawing = false;
     }
+
+    m_currentStroke = nullptr;
+    m_drawing = false;
 }
 
 void CanvasView::wheelEvent(QWheelEvent *event) {

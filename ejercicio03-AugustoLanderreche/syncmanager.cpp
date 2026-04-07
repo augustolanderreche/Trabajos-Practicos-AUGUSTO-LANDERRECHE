@@ -14,6 +14,9 @@ SyncManager::SyncManager(CanvasModel *model, QObject *parent)
     });
 
     connect(&m_timer, &QTimer::timeout, this, &SyncManager::onAutoSync);
+    connect(m_model, &CanvasModel::localModelChanged, this, [this]() {
+        m_hasLocalChanges = true;
+    });
 }
 
 void SyncManager::setServerUrl(const QUrl &url) {
@@ -64,6 +67,10 @@ void SyncManager::stopAutoSync() {
 }
 
 void SyncManager::onAutoSync() {
+    if (m_hasLocalChanges) {
+        return;
+    }
+
     loadFromServer();
 }
 
@@ -76,9 +83,7 @@ void SyncManager::onLoadFinished(QNetworkReply *reply) {
         return;
     }
 
-    CanvasModel remote;
-    if (remote.fromJson(doc.object())) {
-        m_model->mergeFrom(remote);
+    if (!m_hasLocalChanges && m_model->fromJson(doc.object())) {
         emit synced();
     }
 }
@@ -88,5 +93,7 @@ void SyncManager::onSaveFinished(QNetworkReply *reply) {
         emit syncError("Error en respuesta de guardar");
         return;
     }
+
+    m_hasLocalChanges = false;
     emit synced();
 }

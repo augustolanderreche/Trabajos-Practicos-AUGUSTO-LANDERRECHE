@@ -9,6 +9,7 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QString>
 
 struct StrokePoint {
     QPointF pos;
@@ -22,6 +23,7 @@ struct Stroke {
     bool eraser = false;
     qreal width = 1.0;
     QColor color = QColor(192, 19, 76);
+    QString userId;
 };
 
 class CanvasModel : public QObject {
@@ -32,9 +34,10 @@ public:
     QVector<Stroke> strokes() const;
     void clear();
 
-    Stroke &startStroke(bool eraser, const QColor &baseColor, qreal width);
+    Stroke &startStroke(bool eraser, const QColor &baseColor, qreal width, const QString &userId);
     void addPointToStroke(Stroke &stroke, const QPointF &pt);
     void finishStroke(const Stroke &stroke);
+    bool eraseAt(const QPointF &pt, qreal radius, const QString &userId);
 
     void mergeFrom(const CanvasModel &other);
 
@@ -45,6 +48,7 @@ public:
 
 signals:
     void modelChanged();
+    void localModelChanged();
 
 private:
     QVector<Stroke> m_strokes;

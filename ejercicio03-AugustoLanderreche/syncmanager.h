@@ -32,6 +32,7 @@ private:
     QNetworkAccessManager m_nam;
     QUrl m_serverUrl;
     QTimer m_timer;
+    bool m_hasLocalChanges = false;
 };
 
 #endif // SYNCMANAGER_H
