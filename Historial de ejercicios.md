@@ -14,3 +14,16 @@ BOTON RECORDAR SECION: Luego de poner su usuario y contraseña, puede mantener s
 ejercicio 2:
 En el Código se le pidió a Copilot que realice el Código con la estructura adecuada y pensado para ejecutarse en QT con un diseño moderno
 El codigo es de monitoreo de VPS. En el se pueden ver metricas reales y a tiempo real del servidor. Toda la guia de como usarlo esta subido dentro de la carpeta.
+
+ejercicio3:
+El codigo cumple los requerimientos principales de la consigna y presenta una
+implementacion funcional de un lienzo colaborativo en tiempo real con Qt,
+integrando dibujo, goma, guardado en VPS, carga remota y control basico por
+usuario.
+La colaboracion se resuelve mediante un modelo incremental de trazos.
+
+Cada cliente trabaja localmente sobre su copia del lienzo y puede persistir el
+estado en el servidor. El sistema mantiene informacion suficiente para:
+- preservar el dibujo al cerrar y volver a abrir
+- permitir trabajo compartido entre varios integrantes
+- limitar el borrado a los trazos del usuario actual
