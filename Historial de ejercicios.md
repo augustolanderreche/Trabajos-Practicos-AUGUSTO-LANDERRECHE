@@ -27,3 +27,9 @@ estado en el servidor. El sistema mantiene informacion suficiente para:
 - preservar el dibujo al cerrar y volver a abrir
 - permitir trabajo compartido entre varios integrantes
 - limitar el borrado a los trazos del usuario actual
+
+Ejercicio 5:
+Se desarrollo un video que muestra como se hace un login sin QTDesing
+Video del desarrollo del código subido a YouTube sin Listar.
+Link:
+https://youtu.be/4_-Q4PaeF3U
