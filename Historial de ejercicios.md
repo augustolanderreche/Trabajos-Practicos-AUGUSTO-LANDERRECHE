@@ -33,3 +33,9 @@ Se desarrollo un video que muestra como se hace un login sin QTDesing
 Video del desarrollo del código subido a YouTube sin Listar.
 Link:
 https://youtu.be/4_-Q4PaeF3U
+
+Ejercicio 6:
+Se desarrollo un video que muestra como se hace un login con QTDesing
+Video del desarrollo del login subido a YouTube sin Listar.
+Link:
+https://youtu.be/RZX0vMQpIkw?si=3QHWGAA2DfdU-DCv
