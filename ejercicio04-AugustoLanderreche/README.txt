@@ -1,3 +1,9 @@
+AUTORES
+-----
+Augusto Landerreche
+Drako Lusicic
+Nahuel Agustin Pineda
+
 Primero se comenzó abriendo el servidor mediante ssh desde la terminal local, luego se creo el directorio "Ejercicio-04" en el vps con el comando de Linux MKDIR. 
 Posteriormente, se subieron las carpetas mediante el comando SCP, copiando así el directorio desde el local hacia el servidor.
 Una vez subido se ejecuta el comando LS para verificar que se creo el directorio, luego se utilizo el comando "cd Ejercicio04" para volver a verificar si se subió el directorio que copiamos desde local se ejecuto "ls -la" y luego de ver que estaba todo correcto lo que sigue es poner los contenedores en up.
