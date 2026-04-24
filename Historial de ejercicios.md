@@ -51,3 +51,45 @@ Se desarrollo un video que muestra como se hace un login con QTDesing
 Video del desarrollo del login subido a YouTube sin Listar.
 Link:
 https://youtu.be/RZX0vMQpIkw?si=3QHWGAA2DfdU-DCv
+
+ejercicio 7:
+Este proyecto fue desarrollado en C++ con Qt y utiliza una pantalla de Login creada con Qt Designer. La aplicacion permite iniciar sesion, consultar clima real desde API, trabajar con proxy configurable y mostrar una ventana principal en pantalla completa con tarjeta de perfil.
+
+PARA INICIAR SESION: ejecutar la app desde Qt Creator y, en la pantalla de Login, ingresar usuario admin y contrasena 1234.
+
+PARA USAR LA APP EN DEMO: al abrir Login se mostraran temperatura, hora local y estado de conectividad. Los estados posibles son Consultando..., Online (API via proxy), Online (API directa) y Offline (datos simulados).
+
+PARA VOLVER AL LOGIN DESDE LA VENTANA PRINCIPAL: una vez iniciada la sesion, presionar ESC en pantalla completa. La app vuelve al Login y no se cierra.
+
+PARA CAMBIAR FOTO DE PERFIL DESDE LA CARPETA ASSETS: copiar la foto nueva dentro de assets (por ejemplo assets/foto_nueva.jpg), luego editar config.ini en la seccion [ui] y actualizar profile_photo_path=assets/foto_nueva.jpg. Al volver a ejecutar la app, se mostrara la nueva foto.
+
+PARA CAMBIAR API KEY O CIUDAD: editar config.ini en la seccion [api] y configurar weather_url, key, city y units.
+
+Ejemplo:
+weather_url=https://api.openweathermap.org/data/2.5/weather
+key=TU_API_KEY
+city=Cordoba,AR
+units=metric
+
+Si la API key no es valida, la ciudad es incorrecta o falla la conectividad, la app mostrara mensajes amigables y pasara automaticamente a datos simulados para mantener el funcionamiento.
+
+PARA ACTIVAR PROXY: editar config.ini en la seccion [proxy] y usar enabled=true, completando host, port, user y password.
+
+Ejemplo:
+enabled=true
+host=IP_DEL_PROXY
+port=8888
+user=USUARIO
+password=CLAVE
+
+PARA DESACTIVAR PROXY: colocar enabled=false.
+
+PARA VERIFICAR SI REALMENTE SE ESTA USANDO PROXY: en la interfaz debe aparecer Online (API via proxy) cuando lleguen datos reales por proxy. Adicionalmente, revisar eventos.log en build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/debug/logs/eventos.log y buscar lineas como Proxy habilitado para fondo y Proxy de clima habilitado.
+
+PARA PRESENTACION CON EL PROFESOR: mostrar config.ini, ejecutar la app, iniciar sesion, volver con ESC al Login, cambiar foto o ciudad en config.ini y volver a ejecutar. Finalmente mostrar eventos.log para dejar evidencia tecnica del flujo y del uso de API/proxy.
+
+ERRORES COMUNES:
+- Proxy denied connection: la IP del cliente no esta permitida en tinyproxy.
+- Proxy connection refused: servicio de proxy caido o puerto incorrecto.
+- Proxy auth required: usuario o clave del proxy incorrectos.
+- Sin datos reales de clima: revisar API key, city, conectividad y/o configuracion de proxy.
