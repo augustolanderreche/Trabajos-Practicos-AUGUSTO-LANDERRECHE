@@ -42,7 +42,7 @@ bool ValidadorCpp::validarLinea(const QString &linea, QString &diagnostico) cons
     // PALABRAS CLAVE PROHIBIDAS DE PYTHON
     static const QStringList palabrasPython = {
         "print", "def", "class", "import", "from", "if", "elif", "else", "for", "while",
-        "try", "except", "with", "lambda", "return", "yield", "pass", "break", "continue",
+        "try", "except", "with", "lambda", "yield", "pass", "break", "continue",
         "in", "and", "or", "not", "is", "None", "True", "False", "self", "async", "await"
     };
     
