@@ -93,3 +93,141 @@ ERRORES COMUNES:
 - Proxy connection refused: servicio de proxy caido o puerto incorrecto.
 - Proxy auth required: usuario o clave del proxy incorrectos.
 - Sin datos reales de clima: revisar API key, city, conectividad y/o configuracion de proxy.
+
+  Ejercicio 08:
+
+En este trabajo se realizó el entregable de la clase 13 (Programación Orientada a Objetos).
+El código fue desarrollado en C++ con Qt Widgets (qmake) enfocándose en arquitectura OO, polimorfismo obligatorio, redefinición de eventos y validación de sintaxis en tiempo real.
+La aplicación es un editor de código multilenguaje (C++, Python, Java) con login seguro, sistema de bloqueo temporal tras 3 intentos fallidos, validación de sintaxis por línea al abandonar, resaltado de errores en rojo con mensajes diagnósticos amigables, exportación a JPG, registro de eventos persistente con fecha/hora, panel lateral estilo LinkedIn con perfil profesional y soporte completamente offline.
+
+ESTRUCTURA ARQUITECTONICA:
+- Jerarquía 1: Clase base abstracta Pantalla (interfaz común) con derivadas LoginScreen, ModoBloqueado, EditorPrincipal
+- Jerarquía 2: Clase base abstracta ValidadorSintaxis (validación) con derivadas ValidadorCpp, ValidadorPython, ValidadorJava
+- Flujo polimorfico: AppController maneja transiciones usando punteros a clase base (Pantalla*)
+- Redefinición de 6 eventos en cada pantalla: keyPressEvent, mousePressEvent, resizeEvent, closeEvent, focusInEvent, focusOutEvent
+- Signals/Slots para comunicación desacoplada entre componentes
+
+PARA INICIAR SESION:
+usuario: admin
+contraseña: 1234
+
+PARA USAR LA APLICACION:
+1. PANTALLA DE LOGIN:
+   - Ingresar usuario "admin"
+   - Ingresar contraseña "1234"
+   - Presionar "Ingresar" o Enter
+   - Si falla 3 veces: se activa modo bloqueado con cuenta regresiva de 15 segundos (configurable en config.ini)
+   - Tras espera: vuelve a login para reintentar
+
+2. EDITOR PRINCIPAL (fullscreen tras login exitoso):
+   - Selector de lenguaje: dropdown con C++, Python, Java
+   - Al cambiar lenguaje: editor se vacía y carga template inicial del lenguaje seleccionado
+   - Escribir código en el lenguaje seleccionado
+   - Al abandonar línea (Enter, Tab, click otra línea, perder focus): se valida automáticamente
+   - Línea válida: sin marca de color
+   - Línea inválida: resaltado en ROJO + mensaje diagnóstico específico del error
+   
+3. VALIDACION DE SINTAXIS POR LENGUAJE:
+   C++:
+   ✓ Comentarios //, palabras clave (if, for, class, void, int, etc.), terminación con ; o bloques {}
+   ✗ Rechaza: print(), def, class x:, System.out (palabras de Python/Java)
+   Python:
+   ✓ Comentarios #, indentación múltiplos de 4, palabras clave (if:, for:, def, class, etc.), bloques con :
+   ✗ Rechaza: cout, void, System.out, {}, ; al final (palabras de C++/Java)
+   Java:
+   ✓ Comentarios //, palabras clave (public, class, if, for, etc.), terminación con ; o bloques {}
+   ✗ Rechaza: print(), def, import, : al final (palabras de Python/C++)
+
+4. ATAJOS DE TECLADO:
+   Enter → Intentar login (en pantalla de login)
+   Ctrl+S → Exportar código a JPG (en editor)
+   ESC → Cerrar editor y volver a login
+
+5. EXPORTACION A JPG:
+   - Botón "Exportar JPG (Ctrl+S)" en toolbar
+   - Se renderiza todo el código a imagen JPEG legible
+   - Se guarda en: salidas/codigo.jpg (configurable en config.ini)
+   - Se muestra diálogo con ruta final de guardado
+   - Si editor está vacío: muestra advertencia y no exporta
+
+6. REGISTRO DE EVENTOS:
+   - Todos los eventos se registran en: logs/eventos.log
+   - Formato: [YYYY-MM-DD HH:MM:SS] | descripción
+   - Incluye: logins, intentos fallidos, cambios de lenguaje, validaciones, exportaciones, etc.
+
+ARCHIVOS Y CARPETAS GENERADOS EN EJECUCION:
+- config.ini: configuración de usuario, credenciales, tiempos de bloqueo, rutas (auto-creado si no existe)
+- logs/eventos.log: registro de eventos con timestamp
+- salidas/codigo.jpg: exportación del código escrito
+
+CONFIGURACION (config.ini):
+[auth]
+usuario=admin
+clave=1234
+tiempoBloqueoSegundos=15
+
+[editor]
+lenguajePorDefecto=C++
+rutaExportacion=salidas/codigo.jpg
+
+[app]
+rutaLog=logs/eventos.log
+
+>>> Modificar valores según necesidad para cambiar credenciales, tiempo de bloqueo o rutas <<<
+
+CARACTERISTICAS TECNICAS DESTACADAS:
+
+1. Polimorfismo en 2 jerarquías:
+   - AppController usa punteros a Pantalla (base) que apuntan a LoginScreen, ModoBloqueado o EditorPrincipal en runtime
+   - EditorPrincipal valida código con puntero a ValidadorSintaxis (base) que apunta a Cpp, Python o Java según selección
+
+2. Validadores estrictos por lenguaje:
+   - Cada validador rechaza palabras clave de otros lenguajes inmediatamente
+   - Imposible mezclar código de diferentes lenguajes sin que dispare error
+
+3. Signals/Slots desacoplados:
+   - LoginScreen → AppController: loginExitoso(), bloqueoSolicitado()
+   - ModoBloqueado → AppController: bloqueoFinalizado()
+   - CodeEditor → EditorPrincipal: lineaAbandonada(), editorPerdioFoco(), editorRecibioFoco()
+   - UI → métodos privados: onLenguajeCambiado(), exportarAJpg(), limpiarCodigo()
+
+4. Redefinición consciente de eventos:
+   - LoginScreen: Enter intenta login, confirmación en closeEvent
+   - ModoBloqueado: QTimer de 15 segundos, cuenta regresiva visual
+   - EditorPrincipal: Ctrl+S exporta, ESC cierra, validación en focusOut y lineChange
+
+5. Persistencia completa:
+   - config.ini auto-creada con valores por defecto
+   - Directorios logs/ y salidas/ auto-creados en startup
+   - Log persistente con formato estándar
+   - Exportación JPG guardada permanentemente
+
+6. UI responsiva:
+   - Panel CV estilo LinkedIn con avatar circular, descripción, habilidades, contacto
+   - Toolbar con selector de lenguaje y botones de acción
+   - Diagnostico textual de errores bajo el editor
+   - Resaltado de líneas inválidas en ROJO con mensaje específico
+
+LIMITACIONES Y CONSIDERACIONES:
+- Validación por línea no analiza contexto multi-línea (bucles incompletos, etc.)
+- Exportación JPG es blanco y negro sin coloreado sintáctico
+- Credenciales en config.ini (en producción usar BD con hashing)
+- Sistema offline: no sincroniza a la nube
+- Validación es heurística/didáctica, no reemplaza compiladores reales
+
+TROUBLESHOOTING:
+
+Problema: No compila - "header not found"
+Solución: Verificar que Qt 6.x esté instalado y kit seleccionado correctamente
+
+Problema: config.ini no se crea
+Solución: Verificar permisos de escritura en directorio de ejecución
+
+Problema: Validación muy estricta
+Solución: Es por diseño. Editar validadores.cpp si se desean cambiar reglas
+
+Problema: JPG no se guarda
+Solución: Verificar permisos en carpeta salidas/ y espacio disponible en disco
+
+Problema: Log vacío
+Solución: Verificar permisos en carpeta logs/ y que exista
