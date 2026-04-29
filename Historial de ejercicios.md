@@ -231,3 +231,47 @@ Solución: Verificar permisos en carpeta salidas/ y espacio disponible en disco
 
 Problema: Log vacío
 Solución: Verificar permisos en carpeta logs/ y que exista
+
+Ejercicio09:
+"Se desarrollo una app en Qt Widgets con login y registro de usuarios
+sobre SQLite. El login se disenia con Qt Designer y el lienzo
+se programa en una clase QWidget propia. Cada trazo se guarda
+como puntos (x, y, color, grosor) para reconstruir el dibujo
+cuando se vuelve a abrir la aplicacion. Tambien guardo logs
+de acceso exitoso y fallido, y las contrasenias van hasheadas
+con SHA-256 en la base de datos." 
+
+Como se guarda el dibujo en DB:
+Idea clave: un dibujo se guarda en 2 niveles.
+1) Tabla trazos:
+- Cada vez que el usuario termina un trazo (mouse release),
+  se crea un registro nuevo en trazos y se obtiene su id.
+2) Tabla puntos:
+- Cada punto del trazo guarda:
+  - trazo_id
+  - x, y
+  - r, g, b
+  - grosor
+
+Reconstruccion:
+- Al iniciar, se leen los trazos ordenados por id.
+- Para cada trazo, se leen sus puntos ordenados por id.
+- Se repintan en el mismo orden y aparece el dibujo previo.
+
+ El deshacer:
+- Se maneja por trazos completos, no por pixel.
+- Ctrl+Z elimina el ultimo trazo de memoria.
+- Tambien borra ese trazo de la base (trazos + puntos).
+- Se limita a 10 acciones para cumplir consigna.
+
+Seguridad de contraseñas:
+- No se guarda clave en texto plano en registros nuevos.
+- Se usa hash SHA-256 (QCryptographicHash).
+- En login se compara hash(clave_ingresada) vs clave_guardada.
+- Se incluyo migracion automatica para claves viejas en texto plano.
+
+limitaciones:
+- SHA-256 sin salt no es lo mas fuerte para produccion.
+- Para sistema real conviene Argon2/PBKDF2/bcrypt + salt.
+- Para trabajo practico de la materia, esta correcto y mejora
+  claramente respecto a texto plano.
